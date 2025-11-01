@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import validator from "validator";
 
@@ -30,5 +31,47 @@ const UserSchema = new Schema(
     },
     { timestamps: true }
 );
+
+//============ Static method for signup ===========//
+UserSchema.statics.signup = async function (username, email, password) {
+    if (!username || !email || !password) {
+        throw new Error("All fields must be filled");
+    }
+
+    const exists = await this.findOne({ email });
+    if (exists) {
+        throw new Error("Email is already registered");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashPass = await bcrypt.hash(password, salt);
+
+    const user = await this.create({
+        username,
+        email,
+        password: hashPass,
+    });
+
+    return user;
+};
+
+//======= Static method for login ========//
+UserSchema.statics.login = async function (email, password) {
+    if (!email || !password) {
+        throw new Error("Email and password are required");
+    }
+
+    const user = await this.findOne({ email });
+    if (!user) {
+        throw new Error("Incorrect email");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        throw new Error("Incorrect password");
+    }
+
+    return user;
+};
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);
