@@ -1,8 +1,13 @@
+import Builder from "./builder";
+
 const HomePage = () => {
-    return <div className="text-xl">HomePage</div>;
+    return (
+        <div>
+            <div>
+                <Builder />
+            </div>
+        </div>
+    );
 };
 
 export default HomePage;
-
-
-
