@@ -1,6 +1,9 @@
-import { deleteBuilder, getBuilder, updateBuilder } from "@/controllers/builderController";
+import {
+    deleteBuilder,
+    getBuilder,
+    updateBuilder,
+} from "@/controllers/builderController";
 import { connectDB } from "@/lib/db";
-
 
 export default async function handler(req, res) {
     await connectDB();
